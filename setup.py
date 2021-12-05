@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="ooutils",
-    version="0.0.1",
+    version="0.0.2",
     author="KyuzoM",
     author_email="99549950+kyuzom@users.noreply.github.com",
     description="OO utils",
