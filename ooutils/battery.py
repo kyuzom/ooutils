@@ -22,7 +22,7 @@ class Battery(object):
 
 	def level_raw(self, timeout=1.0):
 		'''
-		Return with battery level in raw format (str)
+		Get battery level in raw format (str)
 		@param timeout: [float] Timeout for battery level reading
 		@return [str] Battery level in format '%d V'
 		'''
@@ -54,7 +54,7 @@ class Battery(object):
 
 	def level(self, timeout=1.0):
 		'''
-		Return with battery level in [V] (float)
+		Get battery level in [V] (float)
 		@param timeout: [float] Timeout for battery level reading
 		@return [float] Battery level in [V]
 		'''
@@ -62,7 +62,7 @@ class Battery(object):
 
 	def percentage(self, vmax=4.2, vmin=3.5, timeout=1.0):
 		'''
-		Return with battery level percentage in [%] (float)
+		Get battery level percentage in [%] (float)
 		@param vmax: [float] Battery maximum level in [V]
 		@param vmin: [float] Battery minimum level in [V]
 		@param timeout: [float] Timeout for battery level reading
