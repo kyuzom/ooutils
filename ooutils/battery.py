@@ -18,7 +18,7 @@ class Battery(object):
 	BATTERY_RGX_PAT = "(\d+\.\d+ V)|(\d+ V)"
 
 	def __init__(self):
-		self.ps = None
+		self._ps = None
 
 	def level_raw(self, timeout=1.0):
 		'''
@@ -27,28 +27,29 @@ class Battery(object):
 		@return [str] Battery level in format '%d V'
 		'''
 		def access_battery_level(msgq):
-			self.ps = subprocess.Popen([Battery.BATTERY_CLI_EXE], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			out, err = self.ps.communicate()
-			msgq.put((self.ps.returncode, out, err), block=True, timeout=0.1)
+			self._ps = subprocess.Popen([Battery.BATTERY_CLI_EXE], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			out, err = self._ps.communicate()
+			msgq.put((self._ps.returncode, out, err), block=True, timeout=0.1)
 		msgq = Queue(maxsize=1)
 		psthr = threading.Thread(target=access_battery_level, args=(msgq,))
 		psthr.start()
 		psthr.join(timeout=timeout)
-		if self.ps is None:
-			raise RuntimeError("OO battery_level, Could not retrieve information. Timed out.")
-		elif (self.ps.poll() is None) or psthr.is_alive():
-			self.ps.terminate()
+		if self._ps is None:
+			raise RuntimeError("OO Battery level, Timed out.")
+		elif (self._ps.poll() is None) or psthr.is_alive():
+			self._ps.terminate()
 			psthr.join()
-			raise RuntimeError("OO battery_level, Could not retrieve information. Timed out.")
-		self.ps = None
+			self._ps = None
+			raise RuntimeError("OO Battery level, Timed out.")
+		self._ps = None
 		rc, out, err = msgq.get(block=True, timeout=0.1)
 		msgq.task_done()
 		msgq.join()
 		if rc != 0:
-			raise RuntimeError("OO battery_level, rc: {0}, error: {1}".format(rc, err))
+			raise RuntimeError("OO Battery level, rc: {0}, error: {1}".format(rc, err))
 		match = re.search(Battery.BATTERY_RGX_PAT, out.strip())
 		if match is None:
-			raise RuntimeError("OO battery_level, Could not retrieve information. Unknown str format: {0}".format(out))
+			raise RuntimeError("OO Battery level, Unknown str format: {0}".format(out))
 		return match.group()
 
 	def level(self, timeout=1.0):
