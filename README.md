@@ -29,9 +29,10 @@ Use as an external library:
 from __future__ import print_function
 import ooutils
 # LiPo battery data
-print(ooutils.battery_level_raw())
-print(ooutils.battery_level())
-print(ooutils.battery_percentage(vmax=4.12))
+battery = ooutils.Battery()
+print(battery.level_raw())
+print(battery.level())
+print(battery.percentage(vmax=4.12, timeout=3.0))
 ```
 
 ## License
